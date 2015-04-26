@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -70,8 +72,31 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
     public void onBindViewHolder(PhotoViewHolder photoViewHolder, int position) {
         runEnterAnimation(photoViewHolder.itemView, position);
         FlickrPhoto photo = photos.get(position);
-        photoViewHolder.description.getSettings().setDefaultTextEncodingName("utf-8");
         String description = photo.description;
+        String authorDate = getAuthor(photo.published, description);
+        String firstOffer = getDescription(description);
+        if(firstOffer != null){
+            photoViewHolder.description.setText(Html.fromHtml(firstOffer));
+        }else {
+            photoViewHolder.description.setVisibility(View.GONE);
+        }
+
+        photoViewHolder.title.loadData(authorDate, "text/html; charset=utf-8", null);
+        photoViewHolder.title.setBackgroundColor(Color.parseColor("#66FFFFFF"));
+        Picasso.with(context).load(photo.media.m).into(photoViewHolder.photo);
+    }
+
+    private String getDescription(String description) {
+        int descriptionStart =  description.indexOf("<p>", description.indexOf("<p>", description.indexOf("<p>") + 1) + 1);
+        if(descriptionStart >= 0) {
+            String allDescription = description.substring(descriptionStart);
+            return allDescription.substring(allDescription.indexOf("<p>"), allDescription.indexOf("</p>"));
+        }else {
+            return null;
+        }
+    }
+
+    private String getAuthor(String published, String description) {
         int authorEnd = description.indexOf("</p>") + "</p>".length();
         String author = description.substring(0, authorEnd);
         DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -79,16 +104,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
         DateFormat outputFormat = new SimpleDateFormat("HH:mm:ss");
         String outputText = null;
         try {
-            Date parsed = inputFormat.parse(photo.published);
+            Date parsed = inputFormat.parse(published);
             outputText = outputFormat.format(parsed);
         } catch (ParseException e) {
             Log.e("FeedAdapter", "Cant parse date");
         }
-        photoViewHolder.description.loadData(description.substring(description.indexOf("</p>", description.indexOf("</p>") + 1)), "text/html; charset=utf-8", null);
 
-        photoViewHolder.title.loadData(new StringBuilder(author).insert("<p>".length() + 1, outputText + " ").toString(), "text/html; charset=utf-8", null);
-        photoViewHolder.title.setBackgroundColor(Color.parseColor("#66FFFFFF"));
-        Picasso.with(context).load(photo.media.m).into(photoViewHolder.photo);
+        return new StringBuilder(author).insert("<p>".length() + 1, outputText + " ").toString();
     }
 
     @Override
@@ -102,7 +124,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
         @InjectView(R.id.photoView)
         ImageView photo;
         @InjectView(R.id.descriptionTextView)
-        WebView description;
+        TextView description;
         @InjectView(R.id.titleTextView)
         WebView title;
 

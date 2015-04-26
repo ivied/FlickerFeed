@@ -2,7 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
     </style>
     <style name="CardPhoto">
         <item name="android:layout_width">match_parent</item>
@@ -13,18 +12,13 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
 
-        <item name="android:textColor">#fff</item>
-        <item name="android:textSize">28sp</item>
-        <!--<item name="android:fontFamily">sans-serif-light</item>-->
 
         <item name="android:gravity">bottom|left</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingBottom">8dp</item>
     </style>
 
     <style name="CardDescription">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">4dp</item>
         <item name="android:layout_marginBottom">4dp</item>
     </style>

@@ -2,6 +2,7 @@ package ru.ivied.flickrfeed.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,8 +36,10 @@ public class FeedFragment extends Fragment {
 
     @InjectView(R.id.cardList)
     RecyclerView cardList;
+    @InjectView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout refreshLayout;
 
-
+    private FlickrService flickr;
     private FeedAdapter feedAdapter;
     private List<FlickrPhoto> photos = new ArrayList<>();
 
@@ -50,11 +53,24 @@ public class FeedFragment extends Fragment {
         cardList.setLayoutManager(llm);
         feedAdapter = new FeedAdapter(getActivity(), photos);
         cardList.setAdapter(feedAdapter);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
+        
         return view;
+    }
+
+    private void refreshContent() {
+        flickr.getFeed(callback);
+        refreshLayout.setRefreshing(false);
     }
 
 
     public void onEvent(FlickrFeedEvent event) {
+        photos.clear();
         photos.addAll(event.getData().items);
         feedAdapter.notifyDataSetChanged();
     }
@@ -69,7 +85,7 @@ public class FeedFragment extends Fragment {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
 
-        FlickrService flickr = restAdapter.create(FlickrService.class);
+        flickr = restAdapter.create(FlickrService.class);
         flickr.getFeed(callback);
     }
 

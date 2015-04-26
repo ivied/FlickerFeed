@@ -20,18 +20,18 @@
 
         <WebView
             style="@style/CardTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:layout_alignBottom="@+id/photoView"
             android:id="@+id/titleTextView"
             tools:text="Title"/>
 
-        <WebView
+        <TextView
             style="@style/CardDescription"
             android:id="@+id/descriptionTextView"
             android:textColor="@android:color/darker_gray"
-            android:padding="@dimen/big_padding"
+            android:padding="@dimen/small_padding"
             android:background="@android:color/transparent"
             android:textSize="@dimen/description_size"
             android:layout_below="@+id/titleTextView"
