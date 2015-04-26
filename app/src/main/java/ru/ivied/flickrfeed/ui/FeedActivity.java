@@ -1,9 +1,11 @@
-package ru.ivied.flickrfeed;
+package ru.ivied.flickrfeed.ui;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import ru.ivied.flickrfeed.R;
 
 
 public class FeedActivity extends ActionBarActivity {
