@@ -1,7 +1,9 @@
 package ru.ivied.flickrfeed.ui;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -42,7 +44,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
 
     @Override
     public void onBindViewHolder(PhotoViewHolder photoViewHolder, int position) {
-        FlickrPhoto photo = photos.get(position);
+        final FlickrPhoto photo = photos.get(position);
         String description = photo.description;
         String authorDate = Utils.getAuthor(photo.published, description);
         String firstOffer = Utils.getDescription(description);
@@ -52,10 +54,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
         }else {
             photoViewHolder.description.setVisibility(View.GONE);
         }
-
         photoViewHolder.title.loadData(authorDate, "text/html; charset=utf-8", null);
-        photoViewHolder.title.setBackgroundColor(Color.parseColor("#66FFFFFF"));
+        photoViewHolder.title.setBackgroundColor(context.getResources().getColor(R.color.invisible_white));
         Picasso.with(context).load(photo.media.m).fit().centerCrop().into(photoViewHolder.photo);
+        View.OnClickListener photoClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(photo.link));
+                context.startActivity(browserIntent);
+            }
+        };
+        photoViewHolder.description.setOnClickListener(photoClickListener);
+        photoViewHolder.photo.setOnClickListener(photoClickListener);
+        photoViewHolder.card.setOnClickListener(photoClickListener);
     }
 
     @Override
@@ -71,6 +82,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
         TextView description;
         @InjectView(R.id.titleTextView)
         WebView title;
+        @InjectView(R.id.cardView)
+        CardView card;
 
         public PhotoViewHolder(View view) {
             super(view);
