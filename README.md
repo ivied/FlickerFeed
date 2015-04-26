@@ -15,10 +15,14 @@ and shows them as a list or grid view. 
 pattern will be taken into consideration. Delivery: Build-able, working source code
 	  
 ```
-1. done
-2. done
-3. 
-4. done (scroll to refresh)
-5. done
-6. done
-7. 
+1. Make as list
+2. Done
+3. Done(additional tap on author open author page)
+4. Done (scroll to refresh)
+5. Done
+6. Done
+7. Used cards and RecyclerView. 
+  Make dialog and reafresh page action in Material Design. 
+  Used dependency injection (ButterKnife)
+  I had expirience, in some number of other projects,
+  with unsing Dagger and Dagger2(Dependency injection libs) for Android Testing and Espresso
