@@ -11,9 +11,8 @@
 
         <ImageView
             style="@style/CardPhoto"
-            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:minHeight="50dp"
+            android:layout_height="180dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             tools:src="@drawable/abc_tab_indicator_mtrl_alpha"

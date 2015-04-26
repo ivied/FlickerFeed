@@ -83,7 +83,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
 
         photoViewHolder.title.loadData(authorDate, "text/html; charset=utf-8", null);
         photoViewHolder.title.setBackgroundColor(Color.parseColor("#66FFFFFF"));
-        Picasso.with(context).load(photo.media.m).into(photoViewHolder.photo);
+        Picasso.with(context).load(photo.media.m).fit().centerCrop().into(photoViewHolder.photo);
     }
 
     private String getDescription(String description) {
