@@ -2,4 +2,7 @@
     <string name="app_name">Flickrfeed</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="tray_again">Try again</string>
+    <string name="problem_with_connection">Problem with connection to Flickr</string>
+    <string name="check_you_network">Please check your connection and try again</string>
 </resources>

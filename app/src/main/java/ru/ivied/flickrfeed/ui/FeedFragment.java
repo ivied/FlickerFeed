@@ -5,11 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.mime.TypedByteArray;
 import ru.ivied.flickrfeed.R;
+import ru.ivied.flickrfeed.Utils;
 import ru.ivied.flickrfeed.events.FlickrFeedEvent;
 import ru.ivied.flickrfeed.gson.FlickrData;
 import ru.ivied.flickrfeed.gson.FlickrPhoto;
@@ -56,11 +57,10 @@ public class FeedFragment extends Fragment {
         cardList.setLayoutManager(llm);
         feedAdapter = new ScaleInAnimationAdapter(new AlphaInAnimationAdapter(new FeedAdapter(getActivity(), photos)));
         feedAdapter.setDuration(700);
-        cardList.setAdapter( feedAdapter);
+        cardList.setAdapter(feedAdapter);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 flickr.getFeed(callback);
             }
         });
@@ -70,8 +70,23 @@ public class FeedFragment extends Fragment {
     }
 
     public void onEvent(FlickrFeedEvent event) {
-        photos.addAll(0, event.getData().items);
-        feedAdapter.notifyDataSetChanged();
+        if(event.getData() == null){
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.problem_with_connection)
+                    .content(R.string.check_you_network)
+                    .positiveText(android.R.string.ok)
+                    .negativeText(R.string.tray_again)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            flickr.getFeed(callback);
+                        }
+                    })
+                    .show();
+        }else {
+            photos.addAll(0, Utils.getNewElemnts(photos, event.getData().items));
+            feedAdapter.notifyDataSetChanged();
+        }
         refreshLayout.setRefreshing(false);
     }
 
@@ -95,8 +110,6 @@ public class FeedFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
-
-
     private Callback<retrofit.client.Response> callback = new Callback<retrofit.client.Response>() {
         @Override
         public void success(retrofit.client.Response photoList, retrofit.client.Response response) {
@@ -107,7 +120,7 @@ public class FeedFragment extends Fragment {
 
         @Override
         public void failure(RetrofitError error) {
-            Log.i("omg", "zomg");
+            EventBus.getDefault().post(new FlickrFeedEvent(null));
         }
     };
 }
