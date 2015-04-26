@@ -18,6 +18,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
+import jp.wasabeef.recyclerview.animators.FadeInDownAnimator;
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -40,7 +43,7 @@ public class FeedFragment extends Fragment {
     SwipeRefreshLayout refreshLayout;
 
     private FlickrService flickr;
-    private FeedAdapter feedAdapter;
+    private ScaleInAnimationAdapter feedAdapter;
     private List<FlickrPhoto> photos = new ArrayList<>();
 
     @Override
@@ -51,28 +54,25 @@ public class FeedFragment extends Fragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         cardList.setLayoutManager(llm);
-        feedAdapter = new FeedAdapter(getActivity(), photos);
-        cardList.setAdapter(feedAdapter);
+        feedAdapter = new ScaleInAnimationAdapter(new AlphaInAnimationAdapter(new FeedAdapter(getActivity(), photos)));
+        feedAdapter.setDuration(700);
+        cardList.setAdapter( feedAdapter);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshContent();
+
+                flickr.getFeed(callback);
             }
         });
-        
+
+        cardList.setItemAnimator(new FadeInDownAnimator());
         return view;
     }
 
-    private void refreshContent() {
-        flickr.getFeed(callback);
-        refreshLayout.setRefreshing(false);
-    }
-
-
     public void onEvent(FlickrFeedEvent event) {
-        photos.clear();
-        photos.addAll(event.getData().items);
+        photos.addAll(0, event.getData().items);
         feedAdapter.notifyDataSetChanged();
+        refreshLayout.setRefreshing(false);
     }
 
 

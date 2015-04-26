@@ -62,7 +62,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
             view.setTranslationY(height);
             view.animate().translationY(0)
                     .setInterpolator(new DecelerateInterpolator(3.f))
-                    .setDuration(500)
+                    .setDuration(1500)
                     .start();
         }
     }
@@ -70,7 +70,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.PhotoViewHolde
 
     @Override
     public void onBindViewHolder(PhotoViewHolder photoViewHolder, int position) {
-        runEnterAnimation(photoViewHolder.itemView, position);
+        //runEnterAnimation(photoViewHolder.itemView, position);
         FlickrPhoto photo = photos.get(position);
         String description = photo.description;
         String authorDate = getAuthor(photo.published, description);
